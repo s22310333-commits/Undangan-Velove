@@ -1,0 +1,863 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap');
+
+/* =====================================
+   GLOBAL
+===================================== */
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #514348;
+  background: #fff9f7;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 75px;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+/* =====================================
+   COVER / OPEN INVITATION
+===================================== */
+
+.cover {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 248, 246, 0.93),
+      rgba(250, 225, 226, 0.92)
+    ),
+    url('/cover.jpg') center / cover;
+}
+
+.cover::before,
+.cover::after {
+  content: "";
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border: 1px solid #d8a4ad55;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.cover::before {
+  top: -190px;
+  left: -120px;
+}
+
+.cover::after {
+  bottom: -220px;
+  right: -100px;
+}
+
+.cover-content {
+  text-align: center;
+  position: relative;
+  padding: 32px 20px;
+  animation: rise 0.9s ease both;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  font-weight: 700;
+  color: #ad777f;
+  margin: 0 0 14px;
+}
+
+.cover-script {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: #b77f89;
+  font-size: clamp(48px, 9vw, 82px);
+  line-height: 0.95;
+  margin: 12px 0 0;
+}
+
+.cover h1 {
+  font: 500 clamp(26px, 5vw, 42px) 'Playfair Display', serif;
+  margin: 3px 0 18px;
+  color: #614d53;
+}
+
+.cover-line {
+  width: 48px;
+  height: 1px;
+  background: #c78f98;
+  margin: 0 auto 17px;
+}
+
+.cover-date {
+  letter-spacing: 0.23em;
+  font-size: 12px;
+  color: #946c73;
+}
+
+.cover-to {
+  margin: 30px 0 17px;
+  font-size: 13px;
+  color: #866d72;
+}
+
+.open-button,
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 0;
+  border-radius: 30px;
+  background: #b87e88;
+  color: white;
+  padding: 13px 23px;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 22px #b87e8833;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.open-button:hover,
+.primary-button:hover {
+  background: #98636e;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px #98636e33;
+}
+
+.cover-footer {
+  position: absolute;
+  bottom: 22px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #a77d84;
+}
+
+.cover-flower {
+  position: absolute;
+  color: #d9a5ad;
+  opacity: 0.7;
+  font-size: 100px;
+  animation: float 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.flower-a {
+  top: 8%;
+  right: 9%;
+}
+
+.flower-b {
+  bottom: 10%;
+  left: 8%;
+  font-size: 130px;
+  animation-delay: -2s;
+}
+
+/* =====================================
+   MAIN SITE
+===================================== */
+
+.site {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.8s ease,
+    visibility 0.8s ease;
+}
+
+.site-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =====================================
+   NAVIGATION
+===================================== */
+
+.nav {
+  height: 68px;
+  padding: 0 max(6vw, 22px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fffaf8e8;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #efdfe0;
+}
+
+.brand {
+  font: 600 25px 'Playfair Display', serif;
+  color: #a96e79;
+}
+
+.brand span {
+  font-size: 17px;
+}
+
+.nav-links {
+  display: flex;
+  gap: clamp(14px, 3vw, 36px);
+  font-size: 11px;
+  color: #846c70;
+}
+
+.nav-links a {
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #b87e88;
+}
+
+/* =====================================
+   HERO / HOME
+===================================== */
+
+.hero {
+  min-height: 570px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(25px, 7vw, 100px);
+  padding: 145px 9vw;
+  background:
+    radial-gradient(
+      ellipse at 15% 20%,
+      #f9e6e6 0,
+      transparent 45%
+    ),
+    #fff9f7;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hero-inner {
+  max-width: 440px;
+  z-index: 1;
+}
+
+.hero h2,
+.section h2 {
+  font: 500 clamp(35px, 5vw, 53px) / 1.17 'Playfair Display', serif;
+  color: #5b484e;
+  margin: 0 0 16px;
+}
+
+.hero h2 em {
+  color: #b77c87;
+  font-weight: 500;
+}
+
+.hero-copy,
+.section-subtitle {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #927d80;
+  max-width: 390px;
+}
+
+.hero-date {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #a8737d;
+  font-size: 12px;
+  margin: 25px 0;
+}
+
+.hero .primary-button {
+  margin-top: 4px;
+}
+
+/* =====================================
+   FLORAL DECORATION
+===================================== */
+
+.floral-decoration {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 145px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.8;
+  filter: drop-shadow(0 5px 9px #c99ca31c);
+}
+
+.floral-decoration svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.floral-top {
+  top: 0;
+  transform: translateY(-8px);
+}
+
+.floral-bottom {
+  bottom: 0;
+  transform: rotate(180deg) translateY(-8px);
+}
+
+/* =====================================
+   HERO PHOTO
+===================================== */
+
+.hero-photo {
+  position: relative;
+  width: min(31vw, 300px);
+  min-width: 220px;
+  transform: rotate(3deg);
+}
+
+.photo-frame {
+  aspect-ratio: 4 / 5;
+  background: #f4e4e2;
+  padding: 11px;
+  box-shadow: 0 15px 40px #76535b20;
+  position: relative;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  padding: 11px;
+}
+
+.photo-placeholder {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  color: #b88b91;
+  font: italic 15px 'Playfair Display', serif;
+}
+
+.photo-caption {
+  position: absolute;
+  right: -15px;
+  bottom: -26px;
+  font: italic 13px 'Playfair Display', serif;
+  color: #ae7c85;
+}
+
+/* =====================================
+   INTRO
+===================================== */
+
+.section {
+  text-align: center;
+  padding: 82px 22px;
+}
+
+.intro {
+  background: #fffdfb;
+  position: relative;
+}
+
+.intro > p:not(.eyebrow) {
+  max-width: 620px;
+  margin: 0 auto;
+  color: #927d80;
+  font-size: 13px;
+  line-height: 2;
+}
+
+.decor {
+  display: block;
+  font-size: 32px;
+  color: #d7a1a9;
+  margin-bottom: 14px;
+}
+
+.heart-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  color: #c28c95;
+  margin-top: 22px;
+}
+
+.heart-divider span {
+  width: 48px;
+  height: 1px;
+  background: #e9cbd0;
+}
+
+/* =====================================
+   EVENT DETAILS
+===================================== */
+
+.details {
+  background: #f9eeee;
+}
+
+.details h2,
+.gallery h2,
+.wishes h2 {
+  margin-bottom: 9px;
+}
+
+.section-subtitle {
+  margin: 0 auto 30px;
+}
+
+/* =====================================
+   COUNTDOWN
+===================================== */
+
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 30px auto 42px;
+}
+
+.count-box {
+  width: 75px;
+  padding: 13px 5px;
+  background: #fffaf8;
+  border: 1px solid #f0dfe0;
+  border-radius: 12px;
+  box-shadow: 0 7px 20px #8f5d6510;
+}
+
+.count-box strong {
+  display: block;
+  font: 500 28px 'Playfair Display', serif;
+  color: #a96f7a;
+}
+
+.count-box span {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #a58a8e;
+}
+
+.countdown-done {
+  color: #a96f7a;
+  font: italic 18px 'Playfair Display', serif;
+  margin: 35px;
+}
+
+/* =====================================
+   DETAIL CARDS
+===================================== */
+
+.detail-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  max-width: 850px;
+  margin: 0 auto 35px;
+}
+
+.detail-card {
+  background: #fffaf8;
+  padding: 25px 15px;
+  border: 1px solid #f0dfe0;
+  border-radius: 14px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.detail-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px #a77d8418;
+}
+
+.detail-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f7e7e8;
+  color: #b77e88;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 12px;
+}
+
+.detail-icon svg {
+  width: 19px;
+}
+
+.detail-card h3 {
+  font: 500 18px 'Playfair Display', serif;
+  margin: 0 0 8px;
+  color: #655057;
+}
+
+.detail-card p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #907b7f;
+  margin: 0;
+}
+
+.detail-card small {
+  font-size: 10px;
+}
+
+/* =====================================
+   QUOTE
+===================================== */
+
+.quote-section {
+  text-align: center;
+  background: #c18b94;
+  color: #fff;
+  padding: 50px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quote-section p {
+  font: italic 21px / 1.6 'Playfair Display', serif;
+  margin: 0;
+}
+
+.quote-section span {
+  display: block;
+  margin-top: 12px;
+}
+
+.quote-flower {
+  position: absolute;
+  left: 8%;
+  top: -15px;
+  font-size: 90px;
+  opacity: 0.2;
+}
+
+/* =====================================
+   GALLERY
+===================================== */
+
+.gallery {
+  background: #fffdfb;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 13px;
+  max-width: 900px;
+  margin: 32px auto 0;
+}
+
+.gallery-item {
+  aspect-ratio: 1 / 1.15;
+  background: #f7e9e8;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.gallery-item img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+.gallery-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ba8c94;
+  font-size: 11px;
+}
+
+/* =====================================
+   WISHES
+===================================== */
+
+.wishes {
+  background: #f9eeee;
+}
+
+.wish-icon {
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f1dfe1;
+  color: #b77e88;
+  margin: 0 auto 18px;
+}
+
+.wish-form {
+  max-width: 450px;
+  margin: 25px auto 0;
+  text-align: left;
+  display: grid;
+  gap: 15px;
+}
+
+.wish-form label {
+  font-size: 11px;
+  color: #846c70;
+  display: grid;
+  gap: 7px;
+}
+
+.wish-form input,
+.wish-form textarea {
+  width: 100%;
+  border: 1px solid #e9d5d8;
+  background: #fffdfb;
+  border-radius: 8px;
+  padding: 12px;
+  color: #57464b;
+  outline: none;
+  font-size: 12px;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.wish-form input:focus,
+.wish-form textarea:focus {
+  border-color: #bd8791;
+}
+
+.wish-form .primary-button {
+  justify-self: center;
+  margin-top: 5px;
+}
+
+/* =====================================
+   FOOTER
+===================================== */
+
+.footer {
+  text-align: center;
+  padding: 42px 20px 30px;
+  background: #fffaf8;
+  color: #947b80;
+}
+
+.footer-flower {
+  font-size: 25px;
+  color: #c38d97;
+}
+
+.footer p {
+  font: italic 15px 'Playfair Display', serif;
+}
+
+.footer strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #b77e88;
+  font: italic 16px 'Playfair Display', serif;
+}
+
+.footer small {
+  display: block;
+  margin-top: 22px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+/* =====================================
+   FLOATING BUTTON
+===================================== */
+
+.music-button {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #b87e88;
+  color: white;
+  box-shadow: 0 5px 18px #76535b30;
+  z-index: 4;
+  transition: transform 0.2s ease;
+}
+
+.music-button:hover {
+  transform: scale(1.08);
+}
+
+/* =====================================
+   ANIMATIONS
+===================================== */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+
+  50% {
+    transform: translateY(-14px) rotate(8deg);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================
+   TABLET & MOBILE
+===================================== */
+
+@media (max-width: 700px) {
+  .nav {
+    height: 58px;
+  }
+
+  .nav-links {
+    gap: 12px;
+    font-size: 10px;
+  }
+
+  .hero {
+    min-height: auto;
+    flex-direction: column;
+    text-align: center;
+    padding: 115px 22px;
+    gap: 40px;
+  }
+
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-copy {
+    max-width: 320px;
+  }
+
+  .hero-photo {
+    width: 230px;
+  }
+
+  .hero-date {
+    margin: 18px 0;
+  }
+
+  .detail-cards {
+    grid-template-columns: 1fr;
+    max-width: 350px;
+  }
+
+  .detail-card {
+    padding: 19px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 450px;
+  }
+
+  .section {
+    padding: 65px 20px;
+  }
+
+  .countdown {
+    gap: 7px;
+  }
+
+  .count-box {
+    width: 67px;
+  }
+
+  .count-box strong {
+    font-size: 25px;
+  }
+
+  .floral-decoration {
+    height: 95px;
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-links {
+    gap: 8px;
+    font-size: 9px;
+  }
+
+  .brand {
+    font-size: 22px;
+  }
+
+  .count-box {
+    width: 59px;
+  }
+
+  .cover-flower {
+    font-size: 75px;
+  }
+}
