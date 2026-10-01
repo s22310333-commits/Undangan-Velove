@@ -49,13 +49,34 @@ textarea {
   display: grid;
   place-items: center;
   overflow: hidden;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 248, 246, 0.93),
-      rgba(250, 225, 226, 0.92)
-    ),
-    url('/cover.jpg') center / cover;
+  background: #f5f4f0;
+  will-change: opacity;
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cover-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+}
+
+.cover-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* Overlay netral agar warna foto tetap alami, tanpa semburat pink. */
+  background: rgba(255, 255, 255, 0.035);
+  pointer-events: none;
+}
+
+.cover-closing {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .cover::before,
@@ -82,7 +103,17 @@ textarea {
 .cover-content {
   text-align: center;
   position: relative;
-  padding: 32px 20px;
+  z-index: 2;
+  width: min(86vw, 390px);
+  margin-top: 0;
+  padding: 20px 20px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  /* Kartu dibuat jauh lebih transparan dan tetap netral. */
+  background: rgba(248, 248, 245, 0.24);
+  box-shadow: 0 10px 28px rgba(45, 42, 38, 0.07);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
   animation: rise 0.9s ease both;
 }
 
@@ -90,22 +121,24 @@ textarea {
   font-size: 10px;
   letter-spacing: 0.28em;
   font-weight: 700;
-  color: #ad777f;
-  margin: 0 0 14px;
+  color: #8f5964;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  margin: 0 0 9px;
 }
 
 .cover-script {
   font-family: 'Playfair Display', serif;
   font-style: italic;
-  color: #b77f89;
-  font-size: clamp(48px, 9vw, 82px);
+  color: #a95f70;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  font-size: clamp(42px, 7vw, 64px);
   line-height: 0.95;
-  margin: 12px 0 0;
+  margin: 8px 0 0;
 }
 
 .cover h1 {
-  font: 500 clamp(26px, 5vw, 42px) 'Playfair Display', serif;
-  margin: 3px 0 18px;
+  font: 500 clamp(23px, 4vw, 34px) 'Playfair Display', serif;
+  margin: 2px 0 12px;
   color: #614d53;
 }
 
@@ -113,19 +146,21 @@ textarea {
   width: 48px;
   height: 1px;
   background: #c78f98;
-  margin: 0 auto 17px;
+  margin: 0 auto 11px;
 }
 
 .cover-date {
   letter-spacing: 0.23em;
   font-size: 12px;
-  color: #946c73;
+  color: #72535a;
+  font-weight: 600;
 }
 
 .cover-to {
   margin: 30px 0 17px;
   font-size: 13px;
-  color: #866d72;
+  color: #5f4a50;
+  font-weight: 500;
 }
 
 .open-button,
@@ -159,14 +194,17 @@ textarea {
 
 .cover-footer {
   position: absolute;
+  z-index: 2;
   bottom: 22px;
   font-size: 10px;
   letter-spacing: 0.1em;
-  color: #a77d84;
+  color: #75565e;
+  text-shadow: 0 1px 5px rgba(255, 249, 247, 0.95);
 }
 
 .cover-flower {
   position: absolute;
+  z-index: 2;
   color: #d9a5ad;
   opacity: 0.7;
   font-size: 100px;
@@ -193,14 +231,22 @@ textarea {
 .site {
   opacity: 0;
   visibility: hidden;
+  will-change: opacity;
   transition:
-    opacity 0.8s ease,
-    visibility 0.8s ease;
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 1s;
 }
 
 .site-visible {
   opacity: 1;
   visibility: visible;
+}
+
+/* Kunci halaman saat beranda tampil, sebelum undangan dibuka. */
+.site.home-locked {
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
 }
 
 /* =====================================
@@ -251,6 +297,11 @@ textarea {
 
 .hero {
   min-height: 570px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 0.75s ease,
+    transform 0.75s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,6 +317,20 @@ textarea {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+}
+
+/* Beranda memenuhi area layar di antara navigasi dan bawah layar. */
+.home-locked .hero {
+  height: calc(100vh - 68px);
+  height: calc(100svh - 68px);
+  min-height: 0;
+  padding: 60px 9vw;
+}
+
+.hero-leaving {
+  opacity: 0;
+  transform: translateY(-18px) scale(0.985);
+  pointer-events: none;
 }
 
 .hero-inner {
@@ -375,6 +440,10 @@ textarea {
   font: italic 15px 'Playfair Display', serif;
 }
 
+/* =====================================
+   PHOTO CAPTION
+===================================== */
+
 .photo-caption {
   position: absolute;
   right: -15px;
@@ -395,6 +464,11 @@ textarea {
 .intro {
   background: #fffdfb;
   position: relative;
+  scroll-margin-top: 68px;
+}
+
+.intro-enter {
+  animation: invitationEnter 0.75s ease both;
 }
 
 .intro > p:not(.eyebrow) {
@@ -584,18 +658,25 @@ textarea {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 13px;
+  grid-template-columns: minmax(0, 520px);
+  justify-content: center;
+  gap: 28px;
   max-width: 900px;
   margin: 32px auto 0;
 }
 
 .gallery-item {
-  aspect-ratio: 1 / 1.15;
+  aspect-ratio: 4 / 3;
+  width: 100%;
   background: #f7e9e8;
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 12px;
+  transform: scale(1);
+  transform-origin: center;
+  transition:
+    transform 0.55s ease,
+    box-shadow 0.55s ease;
 }
 
 .gallery-item img {
@@ -604,11 +685,37 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: transform 0.55s ease;
 }
 
 .gallery-item:hover img {
-  transform: scale(1.05);
+  transform: scale(1.025);
+}
+
+/* Efek pop-up bergantian saat foto masuk ke area fokus di HP. */
+.gallery-item-active {
+  transform: scale(1.035);
+  box-shadow: 0 18px 38px rgba(106, 65, 73, 0.2);
+  z-index: 1;
+}
+
+.gallery-item-active img {
+  transform: scale(1.025);
+}
+
+.map-embed {
+  width: min(100%, 760px);
+  margin: 26px auto 0;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(72, 55, 58, 0.1);
+}
+
+.map-embed iframe {
+  display: block;
+  width: 100%;
+  height: 360px;
+  border: 0;
 }
 
 .gallery-placeholder {
@@ -742,6 +849,27 @@ textarea {
 }
 
 /* =====================================
+   SCROLL REVEAL
+===================================== */
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  filter: blur(2px);
+  transition:
+    opacity 850ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 850ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+}
+
+/* =====================================
    ANIMATIONS
 ===================================== */
 
@@ -767,6 +895,18 @@ textarea {
   }
 }
 
+@keyframes invitationEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* =====================================
    TABLET & MOBILE
 ===================================== */
@@ -787,6 +927,19 @@ textarea {
     text-align: center;
     padding: 115px 22px;
     gap: 40px;
+  }
+
+  .home-locked .hero {
+    height: calc(100vh - 58px);
+    height: calc(100svh - 58px);
+    min-height: 0;
+    padding: 42px 22px 28px;
+    gap: 20px;
+  }
+
+  .home-locked .hero-photo {
+    width: min(34vh, 170px);
+    min-width: 125px;
   }
 
   .hero-inner {
@@ -817,8 +970,13 @@ textarea {
   }
 
   .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 450px;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 520px;
+    gap: 24px;
+  }
+
+  .map-embed iframe {
+    height: 300px;
   }
 
   .section {
@@ -859,5 +1017,125 @@ textarea {
 
   .cover-flower {
     font-size: 75px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover,
+  .site,
+  .hero,
+  .intro-enter {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .gallery-item,
+  .gallery-item img,
+  .scroll-reveal {
+    transition: none !important;
+    filter: none !important;
+    transform: none !important;
+  }
+  .scroll-reveal {
+    opacity: 1 !important;
+  }
+}
+
+/* =====================================
+   ELEGANT FLORAL BACKGROUND
+   Decorative accents continue from intro through footer.
+===================================== */
+
+:root {
+  --floral-corner-art: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 320' fill='none'%3E%3Cpath d='M-12 286C60 245 65 180 125 157S220 117 267 30' stroke='%2395a77e' stroke-width='3' stroke-linecap='round' opacity='.72'/%3E%3Cpath d='M53 235C20 204 12 178 20 150C47 157 68 181 69 209M111 177C83 144 82 116 97 91C120 108 133 137 126 160M191 128C164 99 166 72 182 49C205 68 212 91 204 115M232 91C227 61 238 39 260 25C271 48 264 71 247 91' fill='%23a9b894' fill-opacity='.58' stroke='%238da078' stroke-opacity='.55' stroke-width='1.5'/%3E%3Cg transform='translate(38 119)'%3E%3Cellipse cy='-20' rx='15' ry='24' fill='%23e7aeb7' fill-opacity='.75'/%3E%3Cellipse cy='20' rx='15' ry='24' fill='%23e7aeb7' fill-opacity='.75'/%3E%3Cellipse cx='-20' rx='24' ry='15' fill='%23efc0c5' fill-opacity='.75'/%3E%3Cellipse cx='20' rx='24' ry='15' fill='%23efc0c5' fill-opacity='.75'/%3E%3Cellipse cx='-14' cy='-14' rx='14' ry='23' transform='rotate(-45 -14 -14)' fill='%23f3cbd0' fill-opacity='.8'/%3E%3Cellipse cx='14' cy='-14' rx='14' ry='23' transform='rotate(45 14 -14)' fill='%23f3cbd0' fill-opacity='.8'/%3E%3Ccircle r='8' fill='%23d6ad68'/%3E%3C/g%3E%3Cg transform='translate(208 53) scale(.62)'%3E%3Cellipse cy='-20' rx='15' ry='24' fill='%23e7aeb7' fill-opacity='.75'/%3E%3Cellipse cy='20' rx='15' ry='24' fill='%23e7aeb7' fill-opacity='.75'/%3E%3Cellipse cx='-20' rx='24' ry='15' fill='%23efc0c5' fill-opacity='.75'/%3E%3Cellipse cx='20' rx='24' ry='15' fill='%23efc0c5' fill-opacity='.75'/%3E%3Cellipse cx='-14' cy='-14' rx='14' ry='23' transform='rotate(-45 -14 -14)' fill='%23f3cbd0' fill-opacity='.8'/%3E%3Cellipse cx='14' cy='-14' rx='14' ry='23' transform='rotate(45 14 -14)' fill='%23f3cbd0' fill-opacity='.8'/%3E%3Ccircle r='8' fill='%23d6ad68'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.intro,
+.details,
+.quote-section,
+.gallery,
+.wishes,
+.footer {
+  position: relative;
+  isolation: isolate;
+}
+
+.intro::before,
+.intro::after,
+.details::before,
+.details::after,
+.quote-section::before,
+.quote-section::after,
+.gallery::before,
+.gallery::after,
+.wishes::before,
+.wishes::after,
+.footer::before,
+.footer::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: clamp(170px, 27vw, 340px);
+  height: clamp(155px, 24vw, 290px);
+  background-image: var(--floral-corner-art);
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.intro::before,
+.details::before,
+.quote-section::before,
+.gallery::before,
+.wishes::before,
+.footer::before {
+  top: 0;
+  left: 0;
+}
+
+.intro::after,
+.details::after,
+.quote-section::after,
+.gallery::after,
+.wishes::after,
+.footer::after {
+  right: 0;
+  bottom: 0;
+  transform: scaleX(-1) rotate(180deg);
+}
+
+/* Keep text, cards, photos and forms above the floral artwork. */
+.intro > *,
+.details > *,
+.quote-section > *,
+.gallery > *,
+.wishes > *,
+.footer > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quote-section::before,
+.quote-section::after {
+  opacity: 0.2;
+  filter: brightness(1.8) saturate(0.7);
+}
+
+@media (max-width: 700px) {
+  .intro::before,
+  .intro::after,
+  .details::before,
+  .details::after,
+  .quote-section::before,
+  .quote-section::after,
+  .gallery::before,
+  .gallery::after,
+  .wishes::before,
+  .wishes::after,
+  .footer::before,
+  .footer::after {
+    width: 155px;
+    height: 145px;
+    opacity: 0.25;
   }
 }
