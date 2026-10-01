@@ -1,5 +1,7 @@
 
 import { useEffect, useState } from "react";
+import { supabase } from "./lib/supabase";
+import "./wishes.css";
 import {
   CalendarDays,
   Clock3,
@@ -15,8 +17,8 @@ import {
 // DETAIL ACARA
 // =====================================
 
-const EVENT_DATE = "2026-10-24T18:00:00+08:00";
-const EVENT_LABEL = "Sabtu, 24 Oktober 2026";
+const EVENT_DATE = "2026-10-09T18:00:00+08:00";
+const EVENT_LABEL = "Jumat, 9 Oktober 2026";
 const EVENT_TIME = "18.00 WITA";
 const VENUE = "The Sentra Hotel Manado";
 const ADDRESS = "Manado, Sulawesi Utara";
@@ -33,7 +35,8 @@ const WHATSAPP_NUMBER = "";
 
 function getGuestName() {
   const params = new URLSearchParams(window.location.search);
-  return params.get("to") || "Teman & Keluarga";
+  const guestName = params.get("to")?.trim();
+  return guestName || "Teman & Keluarga";
 }
 
 // =====================================
@@ -202,8 +205,38 @@ export default function App() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [activeGalleryPhoto, setActiveGalleryPhoto] = useState(0);
+  const [wishes, setWishes] = useState([]);
+  const [wishLoading, setWishLoading] = useState(true);
+  const [wishSending, setWishSending] = useState(false);
+  const [wishStatus, setWishStatus] = useState("");
 
   const guest = getGuestName();
+
+  // Mengambil ucapan yang sudah tersimpan di Supabase.
+  useEffect(() => {
+    const loadWishes = async () => {
+      setWishLoading(true);
+
+      try {
+        const { data, error } = await supabase
+          .from("wishes")
+          .select("id, name, message, created_at")
+          .order("created_at", { ascending: false })
+          .limit(100);
+
+        if (error) throw error;
+        setWishes(data ?? []);
+      } catch (error) {
+        console.error("Gagal mengambil ucapan:", error);
+        setWishStatus("Ucapan belum dapat dimuat. Silakan refresh halaman.");
+      } finally {
+        setWishLoading(false);
+      }
+    };
+
+    loadWishes();
+  }, []);
+
 
   // Menentukan foto galeri yang sedang berada di area fokus layar.
   useEffect(() => {
@@ -332,19 +365,37 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [invitationStarted]);
 
-  // Mengirim ucapan melalui WhatsApp
-  const sendWish = (e) => {
+  // Menyimpan ucapan ke Supabase agar bisa dilihat semua pengunjung.
+  const sendWish = async (e) => {
     e.preventDefault();
 
-    const text = `Halo Velove!\n\n${message}\n\nDari: ${
-      name.trim() || guest
-    }`;
+    const cleanName = name.trim() || guest;
+    const cleanMessage = message.trim();
 
-    const url = WHATSAPP_NUMBER
-      ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`
-      : `https://wa.me/?text=${encodeURIComponent(text)}`;
+    if (!cleanMessage || wishSending) return;
 
-    window.open(url, "_blank", "noopener,noreferrer");
+    setWishSending(true);
+    setWishStatus("");
+
+    try {
+      const { data, error } = await supabase
+        .from("wishes")
+        .insert([{ name: cleanName, message: cleanMessage }])
+        .select("id, name, message, created_at")
+        .single();
+
+      if (error) throw error;
+
+      setWishes((currentWishes) => [data, ...currentWishes]);
+      setName("");
+      setMessage("");
+      setWishStatus("Ucapan berhasil dikirim. Terima kasih! ♡");
+    } catch (error) {
+      console.error("Gagal mengirim ucapan:", error);
+      setWishStatus("Ucapan gagal dikirim. Coba lagi beberapa saat.");
+    } finally {
+      setWishSending(false);
+    }
   };
 
   return (
@@ -373,7 +424,7 @@ export default function App() {
 
             <div className="cover-line" />
 
-            <p className="cover-date">24 . 10 . 2026</p>
+            <p className="cover-date">9/10/2026</p>
 
             <p className="cover-to">
               Dear, <strong>{guest}</strong>
@@ -460,17 +511,12 @@ export default function App() {
             <div className="hero-photo">
               <div className="photo-frame">
                 <img
-                  src="/cover.jpg"
+                  src="/cover.jpeg"
                   alt="Foto Velove"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
-                <div className="photo-placeholder">
-                  Your favorite photo
-                  <br />
-                  goes here ♡
-                </div>
               </div>
               <span className="photo-caption">made with love</span>
             </div>
@@ -495,10 +541,9 @@ export default function App() {
           <h2>You're warmly invited</h2>
 
           <p>
-            Dengan penuh sukacita, kami mengundang {guest}{" "}
-            untuk hadir dan merayakan hari spesial Velove.
-            Kehadiranmu akan menjadi bagian dari kebahagiaan
-            hari itu.
+            I would love to have you {guest}{" "}
+            to join me as I celebrate this special milestone
+            and step into seventeen.
           </p>
 
           <div className="heart-divider">
@@ -517,8 +562,9 @@ export default function App() {
           <h2>The celebration</h2>
 
           <p className="section-subtitle">
-            Mari luangkan waktu untuk berbagi tawa dan
-            menciptakan kenangan indah.
+            A night filled with
+            memories, laughter & celebration
+            
           </p>
 
           <Countdown />
@@ -601,32 +647,31 @@ export default function App() {
           <h2>Sweet memories</h2>
 
           <p className="section-subtitle">
-            Beberapa momen yang ingin kami kenang.
+            
           </p>
 
           <div className="gallery-grid">
-            {[1, 2, 3, 4].map((n) => (
-              <div
-                className={`gallery-item gallery-${n} ${
-                  activeGalleryPhoto === n ? "gallery-item-active" : ""
-                }`}
-                data-gallery-index={n}
-                key={n}
-              >
-                <img
-                  src={`/foto${n}.jpg`}
-                  alt={`Galeri foto ${n}`}
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-
-                <div className="gallery-placeholder">
-                  <Camera size={22} />
-                  <span>Foto {n}</span>
-                </div>
-              </div>
-            ))}
+            {["foto1.jpeg", "foto2.jpeg", "foto3.jpeg", "foto4.jpeg", "foto11.jpeg"].map((foto, index) => (
+  <div
+    className={`gallery-item ${
+      activeGalleryPhoto === index + 1 ? "gallery-item-active" : ""
+    }`}
+    data-gallery-index={index + 1}
+    key={foto}
+  >
+    <img
+      src={`/${foto}`}
+      alt={`Galeri foto ${index + 1}`}
+      onError={(e) => {
+        e.currentTarget.style.display = "none";
+      }}
+    />
+    <div className="gallery-placeholder">
+      <Camera size={22} />
+      <span>Foto {index + 1}</span>
+    </div>
+  </div>
+))}
           </div>
         </section>
 
@@ -643,12 +688,12 @@ export default function App() {
           <h2>Leave a birthday wish</h2>
 
           <p className="section-subtitle">
-            Tuliskan doa dan ucapan terbaikmu untuk Velove.
+            
           </p>
 
           <form onSubmit={sendWish} className="wish-form">
             <label>
-              Nama kamu
+              Your name
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -657,7 +702,7 @@ export default function App() {
             </label>
 
             <label>
-              Ucapan & doa
+              your wish
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -667,10 +712,50 @@ export default function App() {
               />
             </label>
 
-            <button className="primary-button" type="submit">
-              Send wishes <Send size={16} />
+            <button
+              className="primary-button"
+              type="submit"
+              disabled={wishSending}
+            >
+              {wishSending ? "Sending..." : "Send wishes"} <Send size={16} />
             </button>
           </form>
+
+          {wishStatus && (
+            <p className="wish-status" role="status">
+              {wishStatus}
+            </p>
+          )}
+
+          <div className="wish-list" aria-live="polite">
+            <h3>Ucapan dari teman & keluarga</h3>
+
+            {wishLoading ? (
+              <p className="wish-empty">Memuat ucapan...</p>
+            ) : wishes.length === 0 ? (
+              <p className="wish-empty">
+                Belum ada ucapan. Jadilah yang pertama mengirimkan doa! ♡
+              </p>
+            ) : (
+              <div className="wish-list-items">
+                {wishes.map((wish) => (
+                  <article className="wish-card" key={wish.id}>
+                    <div className="wish-card-heading">
+                      <strong>{wish.name}</strong>
+                      <time dateTime={wish.created_at}>
+                        {new Date(wish.created_at).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </time>
+                    </div>
+                    <p>{wish.message}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* =================================

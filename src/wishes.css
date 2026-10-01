@@ -1,0 +1,89 @@
+/* Tampilan daftar ucapan dari Supabase */
+.wish-status {
+  width: min(100%, 620px);
+  margin: 18px auto 0;
+  color: #93606e;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.wish-list {
+  width: min(100%, 620px);
+  margin: 42px auto 0;
+  text-align: left;
+}
+
+.wish-list h3 {
+  margin: 0 0 18px;
+  color: #604d58;
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.wish-empty {
+  margin: 0;
+  color: #8f7c84;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.wish-list-items {
+  display: grid;
+  gap: 14px;
+}
+
+.wish-card {
+  padding: 18px 20px;
+  border: 1px solid rgba(184, 125, 140, 0.22);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 8px 24px rgba(87, 63, 73, 0.045);
+}
+
+.wish-card-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wish-card-heading strong {
+  color: #77515e;
+  font-size: 0.95rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.wish-card-heading time {
+  flex-shrink: 0;
+  color: #a18d95;
+  font-size: 0.75rem;
+}
+
+.wish-card p {
+  margin: 10px 0 0;
+  color: #655761;
+  font-size: 0.92rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 600px) {
+  .wish-list {
+    margin-top: 32px;
+  }
+
+  .wish-card {
+    padding: 15px 16px;
+  }
+
+  .wish-card-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
