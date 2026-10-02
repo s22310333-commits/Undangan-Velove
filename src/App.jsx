@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "./lib/supabase";
 import "./wishes.css";
 import {
@@ -198,6 +198,7 @@ function Countdown() {
 // =====================================
 
 export default function App() {
+  const audioRef = useRef(null);
   const [opened, setOpened] = useState(false);
   const [coverVisible, setCoverVisible] = useState(true);
   const [invitationStarted, setInvitationStarted] = useState(false);
@@ -272,6 +273,10 @@ export default function App() {
 
   // Membuka undangan dari sampul
   const openInvitation = () => {
+    audioRef.current?.play().catch((error) => {
+      console.error("Musik tidak dapat diputar:", error);
+    });
+
     window.history.replaceState(
       null,
       "",
@@ -400,6 +405,8 @@ export default function App() {
 
   return (
     <main>
+      <audio ref={audioRef} src="/music.mpeg" loop preload="auto" />
+
       {/* =================================
           HALAMAN PEMBUKA
       ================================= */}
@@ -408,7 +415,7 @@ export default function App() {
         <div className={`cover ${opened ? "cover-closing" : ""}`}>
           <img
             className="cover-background"
-            src="/foto1.jpeg"
+            src="/cover-undangan.jpeg"
             alt=""
             aria-hidden="true"
           />
@@ -420,7 +427,7 @@ export default function App() {
             <p className="eyebrow">YOU ARE INVITED TO</p>
 
             <p className="cover-script">Velove's</p>
-            <h1>Birthday Party</h1>
+            <h1>Birthday Party</h1> 
 
             <div className="cover-line" />
 
